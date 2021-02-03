@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:scoped_model/scoped_model.dart';
 import 'note_db_driver.dart';
 import 'note.dart';
