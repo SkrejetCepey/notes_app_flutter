@@ -46,6 +46,13 @@ class NoteList extends StatelessWidget {
     );
   }
 
+  Icon switchIcon(Note note) {
+    if (note.datetimeLimitations != null)
+      return Icon(Icons.watch_later);
+    else
+      return Icon(Icons.note);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModel<NoteListModel>(
@@ -64,9 +71,19 @@ class NoteList extends StatelessWidget {
                     return Container(
                       padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
                       child: Card(
+                        color: (note.datetimeLimitations == null) ? Colors.white : Colors.lightBlue,
                         elevation: 8.0,
                         child: ListTile(
-                          title: Text('${note.title}'),
+                          title: Container(
+                            child: Row(
+                              children: [
+                                switchIcon(note),
+                                Text('${note.title}'),
+                                Spacer(),
+                                Text('${note.datetime}')
+                              ],
+                            ),
+                          ),
                           subtitle: Text('${note.content}'),
                           onTap: () {
                             Navigator.push(context, MaterialPageRoute(builder: (context) =>

@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 import 'note.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 
 class NoteDBDriver {
 
@@ -29,7 +29,9 @@ class NoteDBDriver {
           'CREATE TABLE IF NOT EXISTS notes ('
               'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
               'title VARCHAR(200),'
-              'content TEXT'
+              'content TEXT,'
+              'datetime DATETIME DEFAULT CURRENT_TIMESTAMP,'
+              'datetimeLimitations DATETIME'
               ')'
         );
       },
@@ -40,24 +42,27 @@ class NoteDBDriver {
   Note noteFromMap(Map map) => Note(
     id: map['id'],
     title: map['title'],
-    content: map['content']
+    content: map['content'],
+    datetime: map['datetime'],
+    datetimeLimitations: map['datetimeLimitations']
   );
 
   Map<String, dynamic> noteToMap(Note note) => <String, dynamic>{
     'id' : note.id,
     'title' : note.title,
-    'content' : note.content
+    'content' : note.content,
+    'datetime': DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now()).toString(),
+    'datetimeLimitations': note.datetimeLimitations
   };
 
   Future<void> create(Note note) async {
     Database db = await database;
 
-    // int id = (await db.rawQuery('SELECT MAX(id) + 1 AS id FROM notes')).first['id'] ?? 1;
-
     print('Insert!');
 
     return await db.rawInsert(
-      'INSERT INTO notes (title, content) VALUES (?, ?)', [note.title, note.content]
+      'INSERT INTO notes (title, content, datetimeLimitations) VALUES (?, ?, ?)',
+        [note.title, note.content, note.datetimeLimitations]
     );
   }
 
