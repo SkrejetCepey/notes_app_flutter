@@ -27,7 +27,7 @@ class NoteDBDriver {
       onCreate: (db, version) async {
         await db.execute(
           'CREATE TABLE IF NOT EXISTS notes ('
-              'id INTEGER PRIMARY KEY,'
+              'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,'
               'title VARCHAR(200),'
               'content TEXT'
               ')'
@@ -52,12 +52,12 @@ class NoteDBDriver {
   Future<void> create(Note note) async {
     Database db = await database;
 
-    int id = (await db.rawQuery('SELECT MAX(id) + 1 AS id FROM notes')).first['id'] ?? 1;
+    // int id = (await db.rawQuery('SELECT MAX(id) + 1 AS id FROM notes')).first['id'] ?? 1;
 
     print('Insert!');
 
     return await db.rawInsert(
-      'INSERT INTO notes (id, title, content) VALUES (?, ?, ?)', [id, note.title, note.content]
+      'INSERT INTO notes (title, content) VALUES (?, ?)', [note.title, note.content]
     );
   }
 
